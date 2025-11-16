@@ -82,7 +82,7 @@
             <?php 
                 if (isset($_POST["getweather"])) {
                     $city = $_POST["city"];
-                    $apikey = "db5322457156c3c346e8344541fae729";
+                    $apikey = "Your api Key";
                     $url = "https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apikey";
 
                     $request = curl_init();
