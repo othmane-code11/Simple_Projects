@@ -108,7 +108,10 @@
                     ?>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <?php echo $row["task_name"];?>
-                        <a href="delete4ever_task.php?id=<?php echo $row['id']; ?> " class="btn btn-danger">Delete for ever</a>
+                        <div>
+                            <a href="backup_task.php?id=<?php echo $row['id']; ?>" class="btn btn-info">Back up the Task</a>
+                            <a href="delete4ever_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete for ever</a>
+                        </div>
                     </li>
                     <?php
                         }
