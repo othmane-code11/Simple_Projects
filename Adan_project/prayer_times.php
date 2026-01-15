@@ -1,6 +1,6 @@
 <?php
-    $city = "Rabat";
-    $country = "Morocco";
+    $city = 'Rabat';
+    $country = 'Morocco';
     $date = "today";
     $ApiUrl = "https://api.aladhan.com/v1/timingsByCity/$date?city=$city&country=$country";
 
@@ -17,6 +17,7 @@
 
     echo json_encode([
         'city' => $city,
+        'country' => $country,
         'Fajr' => $Fajr,
         'Sunrise' => $Sunrise,
         'Dhuhr' => $Dhuhr,

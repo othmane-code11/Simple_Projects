@@ -33,11 +33,48 @@
         font-weight: 600;
         color: #0d6efd;
     }
+    .input {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto; 
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    form {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 40px auto;
+    }
+    .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+
 
     </style>
     </head>
     <body>
 
+    <!-- <form method="GET" action="prayer_times.php">
+        <div class="mt-3 d-flex justify-content-center align-items-center">
+            <input type="text" class="input" id="country" name="country" placeholder="Enter Country..." ><br>
+            <input type="text" class="input" id="city" name="city" placeholder="Enter City..." >
+            <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+    <?php
+        // if (isset($_POST["submit"])) {
+        //     $city = $_POST["city"];
+        //     $country = $_POST["country"];
+        // }
+    ?> -->
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
     <div class="container">
