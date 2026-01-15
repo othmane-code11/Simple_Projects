@@ -61,20 +61,6 @@
     </style>
     </head>
     <body>
-
-    <!-- <form method="GET" action="prayer_times.php">
-        <div class="mt-3 d-flex justify-content-center align-items-center">
-            <input type="text" class="input" id="country" name="country" placeholder="Enter Country..." ><br>
-            <input type="text" class="input" id="city" name="city" placeholder="Enter City..." >
-            <button type="submit" name="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
-    <?php
-        // if (isset($_POST["submit"])) {
-        //     $city = $_POST["city"];
-        //     $country = $_POST["country"];
-        // }
-    ?> -->
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm">
     <div class="container">
