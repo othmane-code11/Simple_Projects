@@ -15,6 +15,7 @@ function updateclock() {
     let seconds = String(d.getSeconds()).padStart(2, "0");
 
     document.getElementById("clock").textContent = `${hours}:${minutes}:${seconds}`;
+    
 
     if (Object.keys(prayertimes).length > 0) {
         let curr = `${hours}:${minutes}`;
@@ -27,7 +28,7 @@ function updateclock() {
 async function gadlk() {
     let respo = await fetch("prayer_times.php");
     prayertimes = await respo.json();
-
+    document.getElementById("city").textContent = `Horaires de Prière — ${prayertimes.city} `;
     document.getElementById("fajr_time").textContent = prayertimes.Fajr;
     document.getElementById("sunrise_time").textContent = prayertimes["Sunrise"];
     document.getElementById("dhuhr_time").textContent = prayertimes["Dhuhr"];

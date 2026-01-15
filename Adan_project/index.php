@@ -48,7 +48,7 @@
     <!-- Contenu principal -->
     <main class="container mt-5 pt-4">
     <div class="text-center mb-5">
-    <h2 class="fw-bold">Horaires de Prière — Casablanca</h2>
+    <h2 id="city" class="fw-bold"></h2>
     <p id="date" class="text-muted"></p>
     <p id="clock" class=""></p>
 
