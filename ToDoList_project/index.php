@@ -1,5 +1,13 @@
 <?php
     include("db.php");
+
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: login.php");
+        exit;
+    }
+
+
     if (isset($_POST["submit"])) {
         if ($_SERVER["REQUEST_METHOD"]  == "POST") {
             if (isset($_POST["task_name"])) {
@@ -11,10 +19,27 @@
             }
         }
     }
-    $open_task = $conn->query("SELECT * FROM TASKS WHERE IS_COMPLETED = 0");
-    $tasks_inprogress = $conn->query("SELECT * FROM TASKS WHERE IS_COMPLETED = 2");
-    $closed_task = $conn->query("SELECT * FROM TASKS WHERE IS_COMPLETED = 1");
-    $deleted_task = $conn->query("SELECT * FROM TASKS WHERE IS_COMPLETED = 3");
+
+    $user_id = $_SESSION['user_id'];
+    $open_task = $conn->prepare("SELECT * FROM TASKS WHERE IS_COMPLETED = 0 AND user_id = ?");
+    $open_task->bind_param("i", $user_id);
+    $open_task->execute();
+    $open_task = $open_task->get_result();
+
+    $tasks_inprogress = $conn->prepare("SELECT * FROM TASKS WHERE IS_COMPLETED = 2 AND user_id = ?");
+    $tasks_inprogress->bind_param("i", $user_id);
+    $tasks_inprogress->execute();
+    $tasks_inprogress = $tasks_inprogress->get_result();
+
+    $closed_task = $conn->prepare("SELECT * FROM TASKS WHERE IS_COMPLETED = 1 AND user_id = ?");
+    $closed_task->bind_param("i", $user_id);
+    $closed_task->execute();
+    $closed_task = $closed_task->get_result();
+
+    $deleted_task = $conn->prepare("SELECT * FROM TASKS WHERE IS_COMPLETED = 3 AND user_id = ?");
+    $deleted_task->bind_param("i", $user_id);
+    $deleted_task->execute();
+    $deleted_task = $deleted_task->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +50,30 @@
     <title>TO DO LIST APP</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="index.php">To-Do App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php">Logout</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.php">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="register.php">Register</a>
+                        </li>
+                    <?php endif; ?>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container mt-5">
         <h1 class="text-center">To Do list with Othmane</h1>
         <form action="index.php" class="mb-4" method="post">
