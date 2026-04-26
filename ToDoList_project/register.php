@@ -1,7 +1,6 @@
 <?php
-
     session_start();
-    include 'db.php';
+    include ('db.php');
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'];
@@ -15,7 +14,6 @@
         } else {
             echo "Error: " . $stmt->error;
         }
-
         $stmt->close();
     }
 ?>
@@ -39,9 +37,26 @@
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" required>
+            
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="showPassword">
+                <label class="form-check-label" for="showPassword">Show Password</label>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
+    <script>
+        const passwordInput = document.getElementById("password");
+        const showPasswordCheckbox = document.getElementById("showPassword");
+
+        showPasswordCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        });
+    </script>
 </body>
 </html>
