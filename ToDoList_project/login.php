@@ -1,27 +1,28 @@
 <?php
-session_start();
-include 'db.php';
+    session_start();
+    include ('db.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($user_id, $hashed_password);
-    $stmt->fetch();
+        $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($user_id, $hashed_password);
+        $stmt->fetch();
 
-    if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
-        $_SESSION['user_id'] = $user_id;
-        header("Location: index.php");
-    } else {
-        echo "Invalid email or password";
+        if ($stmt->num_rows > 0 && password_verify($password, $hashed_password)) {
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['email'] = $email;
+            header("Location: index.php");
+        } else {
+            echo "Invalid email or password";
+        }
+
+        $stmt->close();
     }
-
-    $stmt->close();
-}
 ?>
 
 <!DOCTYPE html>
@@ -43,15 +44,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" name="password" required>
+            
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="showPassword">
+                <label class="form-check-label" for="showPassword">Show Password</label>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
     <div class="text-center mt-3">
-        <p><a href="forgot-password.php">Forgot Password?</a></p>
+        <p><a href="forgot_password.php">Forgot Password?</a></p>
     </div>
     <div class="text-center mt-3">
         <p>Don't have an account? <a href="register.php">Register here</a></p>
     </div>
 </div>
+
+    <script>
+        const passwordInput = document.getElementById("password");
+        const showPasswordCheckbox = document.getElementById("showPassword");
+
+        showPasswordCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        });
+    </script>
+
 </body>
 </html>

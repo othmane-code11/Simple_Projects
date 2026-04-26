@@ -1,5 +1,6 @@
 <?php
     include("db.php");
+    include("send_mailer.php");
 
     session_start();
     if (!isset($_SESSION['user_id'])) {
@@ -7,15 +8,21 @@
         exit;
     }
 
-
     if (isset($_POST["submit"])) {
         if ($_SERVER["REQUEST_METHOD"]  == "POST") {
             if (isset($_POST["task_name"])) {
                 $task_name = $_POST["task_name"];
-                $stmt = $conn->prepare("INSERT INTO TASKS (task_name) VALUES (?)");
-                $stmt->bind_param("s", $task_name);
+                $_SESSION["task_name"] = $task_name;
+                $user_id = $_SESSION['user_id'];
+                $stmt = $conn->prepare("INSERT INTO TASKS (task_name, user_id) VALUES (?, ?)");
+                $stmt->bind_param("si", $task_name, $user_id);
                 $stmt->execute();
                 $stmt->close();
+
+                $to = $_SESSION['email'];
+                $subject = "New Task Added";
+                $body = "A new task has been added to your list: " . $task_name;
+                sendEmail($to, $subject, $body);
             }
         }
     }
@@ -158,7 +165,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <?php echo $row["task_name"];?>
                         <div>
-                            <a href="backup_task.php?id=<?php echo $row['id']; ?>" class="btn btn-info">Back up the Task</a>
+                            <a href="complete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-info">Back up the Task</a>
                             <a href="delete4ever_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete for ever</a>
                         </div>
                     </li>
