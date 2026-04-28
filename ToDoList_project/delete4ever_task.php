@@ -15,4 +15,4 @@
         $body = "Task $task_name has been deleted from your list.";
         sendEmail($to, $subject, $body);
     }
-    header("location:index.php");
+    header("location:index.php?deleted=1");

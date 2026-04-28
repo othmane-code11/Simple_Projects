@@ -11,7 +11,7 @@
     if (isset($_POST["submit"])) {
         if ($_SERVER["REQUEST_METHOD"]  == "POST") {
             if (isset($_POST["task_name"])) {
-                $task_name = $_POST["task_name"];
+                $task_name = htmlspecialchars($_POST["task_name"]);
                 $_SESSION["task_name"] = $task_name;
                 $user_id = $_SESSION['user_id'];
                 $stmt = $conn->prepare("INSERT INTO TASKS (task_name, user_id) VALUES (?, ?)");
@@ -25,6 +25,35 @@
                 sendEmail($to, $subject, $body);
             }
         }
+    }
+
+    //Edit Task
+    $edit_task = null;
+    if (isset($_POST['edit'])) {
+        $id = $_POST['id'];
+
+        $stmt = $conn->prepare("SELECT * FROM TASKS WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $id, $_SESSION['user_id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $edit_task = $result->fetch_assoc();
+        }
+    }
+
+    if (isset($_POST['update'])) {
+        $task_name = htmlspecialchars($_POST['task_name']);
+        $id = $_POST['id'];
+        $user_id = $_SESSION['user_id'];
+        $_SESSION["task_name"] = $task_name;
+        $stmt = $conn->prepare("UPDATE TASKS SET task_name = ? WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("sii", $task_name, $id, $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        header("Location: index.php?updated=1");
+        exit;
     }
 
     $user_id = $_SESSION['user_id'];
@@ -82,11 +111,35 @@
         </div>
     </nav>
     <div class="container mt-5">
+        <?php
+            if (isset($_POST["submit"])) {
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    if (isset($_POST["task_name"])) {
+                        echo "<div class='alert alert-success'>Task added successfully!</div>";
+                    }
+                }
+            } else if (isset($_GET['deleted']) && $_GET['deleted'] == 1) {
+                echo "<div class='alert alert-danger'>Task deleted successfully!</div>";
+                header("Refresh: 2; url=index.php");
+            } else if (isset($_GET['updated']) && $_GET['updated'] == 1) {
+                echo "<div class='alert alert-warning'>Task updated successfully!</div>";
+                header("Refresh: 2; url=index.php");
+            }
+        ?>
         <h1 class="text-center">To Do list with Othmane</h1>
-        <form action="index.php" class="mb-4" method="post">
+        <form action="index.php" method="post" class="mb-4">
             <div class="input-group">
-                <input type="text" name="task_name" id="" class="form-control" placeholder="Enter a new task ..." required>
-                <button class="btn btn-primary" name="submit">ADD</button>
+                <input type="text" name="task_name" class="form-control" 
+                    value="<?php echo $edit_task ? $edit_task['task_name'] : ''; ?>"
+                    placeholder="Enter a task..." 
+                    required
+                >
+                <?php if ($edit_task): ?>
+                    <input type="hidden" name="id" value="<?php echo $edit_task['id']; ?>">
+                    <button class="btn btn-warning" name="update">Update</button>
+                <?php else: ?>
+                    <button class="btn btn-primary" name="submit">ADD</button>
+                <?php endif; ?>
             </div>
         </form>
         <div class="row">
@@ -99,6 +152,10 @@
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <?php echo $row["task_name"];?>
                                 <div>
+                                    <form action="" method="post" style="display: inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                        <input type="submit" value="&#9998;" name="edit" style="padding:5px;border-radius:5px;border:1px solid;padding-bottom:9px">
+                                    </form>
                                     <a href="in_progress.php?id=<?php echo $row['id']; ?>" class="btn btn-secondary" name="inprogress">In progress</a>
                                     <a href="complete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-success" name="complet">Complete</a>
                                     <a href="delete_task.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Delete</a>
